@@ -1,6 +1,7 @@
 # polli-distribution
 Post-process image data to get stats about particle distribution
 
+```
 usage: distribution.py [-h] [--n_bin N_BIN] input
 
 Compute statistics about particle distribution
@@ -11,6 +12,7 @@ positional arguments:
 options:
   -h, --help     show this help message and exit
   --n_bin N_BIN  Number of bins; default=16
+```
 
 Example:
 
