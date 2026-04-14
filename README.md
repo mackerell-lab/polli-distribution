@@ -14,6 +14,7 @@ options:
 
 Example:
 
+```
 $ python distribution.py Results_749-193-2_SB_only_centroids.csv 
         Area                              
        count       sum      mean       std
@@ -36,5 +37,5 @@ $ python distribution.py Results_749-193-2_SB_only_centroids.csv
 Mean  274.25  0.018107  0.000066  0.000502
 
 Results saved to Results_749-193-2_SB_only_centroids_stats.csv
-
+```
 
