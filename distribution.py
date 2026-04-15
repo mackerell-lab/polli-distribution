@@ -23,10 +23,10 @@ df['theta'] = np.arctan2(df['Y'],df['X'])
 
 n_bin=args.n_bin
 df[f'bin{n_bin}'] = np.floor((df['theta'] + np.pi) / (2*np.pi) * n_bin)%n_bin
-stats=df.groupby(f'bin{n_bin}').agg({'Area': ['count', 'sum', 'mean', 'std']})
-mean_row = stats.mean()
-mean_row.name = 'Mean'
-stats = pd.concat([stats, mean_row.to_frame().T])
+stats=df.groupby(f'bin{n_bin}').agg({'Area': ['count', 'sum', 'mean', 'std', 'sem']})
+summary = stats.agg(['mean', 'std', 'sem'])
+summary.index = ['Mean', 'Std', 'SEM']
+stats = pd.concat([stats, summary])
 print(stats)
 stats.to_csv(args.input[:-4]+'_stats.csv')
 print(f'\nResults saved to {args.input[:-4]}_stats.csv')

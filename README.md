@@ -1,5 +1,8 @@
 # polli-distribution
-Post-process image data to get stats about particle distribution
+Post-process image data to get stats about particle distribution in angular bins (sectors) provided by ImageJ. You can obtain centroids of the particles from ImageJ and export that as a csv by selecting Centroid under the menu Analyze > Set Measurements... .
+The CSV is expected to have at least these three columns: Area, X, Y. It may have others, e.g. Mean, Min, Max. The order doesn't matter.
+
+A new CSV file is created with "\_stats" appended to the name. If your input file is example.csv, then example\_stats.csv is created. It generates n\_bin sectors, and the following per-bin statistics: total count of particles, sum of Area, mean of Area, stdev of Area, and standard error of the mean of Area. Then over all bins, additional stats are reported, namely the Mean, Std and SEM.
 
 ```
 usage: distribution.py [-h] [--n_bin N_BIN] input
@@ -17,26 +20,16 @@ options:
 Example:
 
 ```
-$ python distribution.py Results_749-193-2_SB_only_centroids.csv 
-        Area                              
-       count       sum      mean       std
-0.0   277.00  0.011220  0.000041  0.000083
-1.0   321.00  0.010044  0.000031  0.000034
-2.0   367.00  0.040215  0.000110  0.001213
-3.0   185.00  0.006209  0.000034  0.000043
-4.0   289.00  0.020815  0.000072  0.000588
-5.0   239.00  0.010273  0.000043  0.000091
-6.0   248.00  0.008441  0.000034  0.000032
-7.0   236.00  0.033426  0.000142  0.001565
-8.0   217.00  0.023467  0.000108  0.000958
-9.0   190.00  0.006046  0.000032  0.000026
-10.0  249.00  0.013792  0.000055  0.000379
-11.0  256.00  0.008055  0.000031  0.000022
-12.0  307.00  0.041012  0.000134  0.001492
-13.0  270.00  0.031111  0.000115  0.001278
-14.0  389.00  0.015160  0.000039  0.000202
-15.0  348.00  0.010429  0.000030  0.000027
-Mean  274.25  0.018107  0.000066  0.000502
+$ python distribution.py Results_749-193-2_SB_only_centroids.csv --n_bin 4
+             Area                                        
+            count       sum      mean       std       sem
+0.0   1150.000000  0.067687  0.000059  0.000687  0.000020
+1.0   1012.000000  0.072954  0.000072  0.000820  0.000026
+2.0    912.000000  0.051360  0.000056  0.000508  0.000017
+3.0   1314.000000  0.097711  0.000074  0.000931  0.000026
+Mean  1097.000000  0.072428  0.000065  0.000737  0.000022
+Std    174.497373  0.019199  0.000009  0.000182  0.000004
+SEM     87.248687  0.009600  0.000005  0.000091  0.000002
 
 Results saved to Results_749-193-2_SB_only_centroids_stats.csv
 ```
