@@ -2,7 +2,7 @@
 Post-process image data to get stats about particle distribution in angular bins (sectors) provided by ImageJ. You can obtain centroids of the particles from ImageJ and export that as a csv by selecting Centroid under the menu Analyze > Set Measurements... .
 The CSV is expected to have at least these three columns: Area, X, Y. It may have others, e.g. Mean, Min, Max. The order doesn't matter.
 
-A new CSV file is created with "\_stats" appended to the name. If your input file is example.csv, then example\_stats.csv is created. It generates n\_bin sectors, and the following per-bin statistics: total count of particles, sum of Area, mean of Area, stdev of Area, and standard error of the mean of Area. Then over all bins, additional stats are reported, namely the Mean, Std and SEM.
+A new CSV file is created with "\_statsN" appended to the name. If your input file is example.csv with n\_bin=3, then example\_stats3.csv is created. It generates n\_bin sectors, and the following per-bin statistics: total count of particles, sum of Area, mean of Area, stdev of Area, and standard error of the mean of Area. Then over all bins, additional stats are reported, namely the Mean, Std and SEM.
 
 The CSV is expected to be created with ImageJ to have the circular ROI defined, and the center is contained in the first row. THe last 4 rows contain stats which are ignored.
 

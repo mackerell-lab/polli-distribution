@@ -39,5 +39,8 @@ summary.index = ['Mean', 'Std', 'SEM']
 
 stats = pd.concat([stats, summary])
 print(stats)
-stats.to_csv(args.input[:-4]+'_stats.csv')
-print(f'\nResults saved to {args.input[:-4]}_stats.csv')
+
+# Save output
+output_filename=f'{args.input[:-4]}_stats{n_bin}.csv'
+stats.to_csv(output_filename)
+print(f'\nResults saved to {output_filename}')
