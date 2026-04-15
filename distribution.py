@@ -22,10 +22,15 @@ df['r'] = np.sqrt(df['X']**2+df['Y']**2)
 df['theta'] = np.arctan2(df['Y'],df['X'])
 
 n_bin=args.n_bin
+# Compute n_bin sectors:
 df[f'bin{n_bin}'] = np.floor((df['theta'] + np.pi) / (2*np.pi) * n_bin)%n_bin
+# Stats per-bin (per-sector) are calculated here:
 stats=df.groupby(f'bin{n_bin}').agg({'Area': ['count', 'sum', 'mean', 'std', 'sem']})
+
+# Summary stats over the bins are here:
 summary = stats.agg(['mean', 'std', 'sem'])
 summary.index = ['Mean', 'Std', 'SEM']
+
 stats = pd.concat([stats, summary])
 print(stats)
 stats.to_csv(args.input[:-4]+'_stats.csv')
