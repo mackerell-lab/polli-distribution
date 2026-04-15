@@ -8,10 +8,16 @@ parser.add_argument('--n_bin', type=int, default=16, help='Number of bins; defau
 args = parser.parse_args()
 
 # Read in ImageJ data
-df = pd.read_csv(args.input)
+df = pd.read_csv(args.input, skipfooter=4, engine='python') 
+# assumes first line has overall circle Area and Centroid X,Y (this is saved into metadata)
+# skips the last 4 rows which contain stats we don't need (Mean, Min, Max, SD)
+metadata = df.iloc[0]
+df = df.iloc[1:].copy()
+x0 = float(metadata['X'])
+y0 = float(metadata['Y'])
 # Calculate approximate center and shift
-df['X']-=df['X'].max()/2
-df['Y']-=df['Y'].max()/2
+df['X']-=x0
+df['Y']-=y0
 
 # r = sqrt(x^2, y^2)
 df['r'] = np.sqrt(df['X']**2+df['Y']**2)
