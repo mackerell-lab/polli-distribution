@@ -1,12 +1,11 @@
 # polli-distribution
 Post-process image data to get stats about particle distribution in angular bins (sectors) provided by ImageJ. You can obtain centroids of the particles from ImageJ and export that as a csv by selecting Centroid under the menu Analyze > Set Measurements... .
-The CSV is expected to have at least these three columns: Area, X, Y. It may have others, e.g. Mean, Min, Max. The order doesn't matter.
+The CSV is expected to have at least these three columns: Area, X, Y. It may have others, e.g. Mean, Min, Max. The order doesn't matter. It is expected to be created with ImageJ to have the circular ROI defined, wiht the center of that circular ROI contained in the first row. The last 4 rows contain stats which are ignored.
 
 A new CSV file is created with "\_statsN" appended to the name. If your input file is test.csv with n\_bin=5, then test\_stats5.csv is created. It generates n\_bin sectors, and the following per-bin statistics: total count of particles, sum of Area, mean of Area, stdev of Area, and standard error of the mean of Area. Then over all bins, additional stats are reported, namely the Mean, Std and SEM.
 
 An area distribution with n\_bin\_area many bins is also generated per-sector. The min and max area to set the edges of the histogram can also be supplied. They will be automatically determined based on the total area distribution if not supplied.
 
-The CSV is expected to be created with ImageJ to have the circular ROI defined, and the center is contained in the first row. THe last 4 rows contain stats which are ignored.
 
 ```
 $ python distribution.py -h
