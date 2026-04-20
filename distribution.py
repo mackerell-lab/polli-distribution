@@ -55,7 +55,7 @@ max_area = df["Area"].max()
 if args.max_area: max_area = args.max_area
 
 bins = np.linspace(min_area, max_area, args.n_bin_area+1)
-size_distr = (df.assign(area_bin=pd.cut(df["Area"], bins=bins))
+size_distr = (df.assign(area_bin=pd.cut(df["Area"], bins=bins, include_lowest=True))
     .groupby([f"bin{n_bin}", "area_bin"], observed=False)
     .size()
     .unstack(fill_value=0)
