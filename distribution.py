@@ -7,7 +7,6 @@ parser.add_argument('input', help='Input file, csv format')
 parser.add_argument('-o', help='Optional name of output file, csv format')
 parser.add_argument('--n_bin', type=int, default=16, help='Number of Sector-shaped bins; default=%(default)s')
 parser.add_argument('--max_area', type=float, help='Optional max Area for the size distribution (auto-calculated if not supplied)')
-parser.add_argument('--min_area', type=float, help='Optional min Area for the size distribution (auto-calculated if not supplied)')
 parser.add_argument('--n_bin_area', type=int, default=10, help='Number of particle size (Area) distribution bins; default=%(default)s')
 args = parser.parse_args()
 
@@ -49,13 +48,12 @@ stats = df.groupby(f'bin{n_bin}').agg(
 )
 
 # Size distribution calculation:
-min_area = df["Area"].min()
-if args.min_area: min_area = args.min_area
+min_area = 0
 max_area = df["Area"].max()
 if args.max_area: max_area = args.max_area
 
 bins = np.linspace(min_area, max_area, args.n_bin_area+1)
-size_distr = (df.assign(area_bin=pd.cut(df["Area"], bins=bins, include_lowest=True))
+size_distr = (df.assign(area_bin=pd.cut(df["Area"], bins=bins))# include_lowest=True))
     .groupby([f"bin{n_bin}", "area_bin"], observed=False)
     .size()
     .unstack(fill_value=0)
