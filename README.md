@@ -4,7 +4,7 @@ The CSV is expected to have at least these three columns: Area, X, Y. It may hav
 
 A new CSV file is created with "\_statsN" appended to the name. If your input file is test.csv with n\_bin=5, then test\_stats5.csv is created. It generates n\_bin sectors, and the following per-bin statistics: total count of particles, sum of Area, mean of Area, stdev of Area, and standard error of the mean of Area. Then over all bins, additional stats are reported, namely the Mean, Std and SEM.
 
-An area distribution with n\_bin\_area many bins is also generated per-sector. The min and max area to set the edges of the histogram can also be supplied. They will be automatically determined based on the total area distribution if not supplied.
+An area distribution with n\_bin\_area many bins is also generated per-sector. The max area to set the edges of the histogram can also be supplied, or automatically determined based on the total area distribution if not supplied.
 
 
 ```
@@ -21,7 +21,6 @@ options:
   -o O                  Optional name of output file, csv format
   --n_bin N_BIN         Number of Sector-shaped bins; default=16
   --max_area MAX_AREA   Optional max Area for the size distribution (auto-calculated if not supplied)
-  --min_area MIN_AREA   Optional min Area for the size distribution (auto-calculated if not supplied)
   --n_bin_area N_BIN_AREA
                         Number of particle size (Area) distribution bins; default=10
 ```
