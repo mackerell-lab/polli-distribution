@@ -1,5 +1,5 @@
-# This script produces:
-#   Summary sheet: 1.sector stats; 2. global Area-bin counts; 3. global Diameter-bin counts
+# This script produces a MS Excel format workbook with:
+#   Summary sheet: 1. sector stats; 2. global Area-bin counts; 3. global Diameter-bin counts
 #                  4. D10/D50/D90 using diameter; 5. log-normal fit using Diameter
 #   Sector sheets: 1. raw particle data; 2. sector summary; 3. global Area-bin distribution
 #                  4. local Area-bin distribution; 5. global Diameter-bin distribution
@@ -10,15 +10,15 @@ import numpy as np
 import argparse
 
 parser = argparse.ArgumentParser(description='Compute particle distribution statistics by sector')
-parser.add_argument('input', help='Input file, csv format')
-parser.add_argument('-o', help='Optional output filename, xlsx format')
-parser.add_argument('--n_bin', type=int, default=16, help='Number of angular sector bins; default=%(default)s')
-parser.add_argument('--n_bin_size', type=int, default=10, help='Number of size bins for area/diameter; default=%(default)s')
-parser.add_argument('--min_area', type=float, default=None, help='Optional minimum area for global area bins')
-parser.add_argument('--max_area', type=float, default=None, help='Optional maximum area for global area bins')
+parser.add_argument('input',                                    help='Input file, csv format')
+parser.add_argument('-o',                                       help='Optional output filename, xlsx format')
+parser.add_argument('--n_bin',        type=int,   default=16,   help='Number of angular sector bins; default=%(default)s')
+parser.add_argument('--n_bin_size',   type=int,   default=10,   help='Number of size bins for area/diameter; default=%(default)s')
+parser.add_argument('--min_area',     type=float, default=None, help='Optional minimum area for global area bins')
+parser.add_argument('--max_area',     type=float, default=None, help='Optional maximum area for global area bins')
 parser.add_argument('--min_diameter', type=float, default=None, help='Optional minimum diameter for global diameter bins')
 parser.add_argument('--max_diameter', type=float, default=None, help='Optional maximum diameter for global diameter bins')
-parser.add_argument('--log_bins', action='store_true', help='Use logarithmic bins for area and diameter distributions')
+parser.add_argument('--log_bins', action='store_true',          help='Use logarithmic bins for area and diameter distributions')
 args = parser.parse_args()
 
 def compute_percentiles(series):
@@ -71,32 +71,28 @@ def make_bins(data, n_bins, use_log=False, min_val=None, max_val=None):
     return np.linspace(lo, hi, n_bins + 1)
 
 def make_distribution_table(series, bins, label):
-    if bins is None or len(series.dropna()) == 0:
-        return pd.DataFrame(columns=[label, 'Count'])
+  if bins is None or len(series.dropna()) == 0:
+    return pd.DataFrame(columns=[label, 'Count'])
 
-    cut_series = pd.cut(series, bins=bins, include_lowest=True)
-    counts = cut_series.value_counts().sort_index()
-    out = counts.reset_index()
-    out.columns = [label, 'Count']
-    return out
-
-
-# -------------------------
-# Validate input
-# -------------------------
-if not args.input.lower().endswith('.csv'):
-    raise SystemExit('ERROR: Input must be a CSV file.')
+  cut_series = pd.cut(series, bins=bins, include_lowest=True)
+  counts = cut_series.value_counts().sort_index()
+  out = counts.reset_index()
+  out.columns = [label, 'Count']
+  return out
 
 # -------------------------
 # Load data
 # -------------------------
+if not args.input.lower().endswith('.csv'):
+  raise SystemExit('ERROR: Input must be a CSV file.')
+
 df = pd.read_csv(args.input, skipfooter=4, engine='python')
 
 metadata = df.iloc[0]
 df = df.iloc[1:].copy()
 
 for col in ['X', 'Y', 'Area']:
-    df[col] = pd.to_numeric(df[col], errors='coerce')
+  df[col] = pd.to_numeric(df[col], errors='coerce')
 
 df = df.dropna(subset=['X', 'Y', 'Area']).copy()
 
@@ -128,36 +124,36 @@ area_source = df['Area'].copy()
 diam_source = df['Diameter'].copy()
 
 if args.log_bins:
-    area_source = area_source[area_source > 0]
-    diam_source = diam_source[diam_source > 0]
+  area_source = area_source[area_source > 0]
+  diam_source = diam_source[diam_source > 0]
 
 global_area_bins = make_bins(
-    area_source,
-    args.n_bin_size,
-    use_log=args.log_bins,
-    min_val=args.min_area,
-    max_val=args.max_area
+  area_source,
+  args.n_bin_size,
+  use_log=args.log_bins,
+  min_val=args.min_area,
+  max_val=args.max_area
 )
 
 global_diameter_bins = make_bins(
-    diam_source,
-    args.n_bin_size,
-    use_log=args.log_bins,
-    min_val=args.min_diameter,
-    max_val=args.max_diameter
+  diam_source,
+  args.n_bin_size,
+  use_log=args.log_bins,
+  min_val=args.min_diameter,
+  max_val=args.max_diameter
 )
 
 if global_area_bins is None:
-    raise SystemExit('ERROR: Could not create global area bins.')
+  raise SystemExit('ERROR: Could not create global area bins.')
 if global_diameter_bins is None:
-    raise SystemExit('ERROR: Could not create global diameter bins.')
+  raise SystemExit('ERROR: Could not create global diameter bins.')
 
 df_area = df.copy()
 df_diam = df.copy()
 
 if args.log_bins:
-    df_area = df_area[df_area['Area'] > 0].copy()
-    df_diam = df_diam[df_diam['Diameter'] > 0].copy()
+  df_area = df_area[df_area['Area'] > 0].copy()
+  df_diam = df_diam[df_diam['Diameter'] > 0].copy()
 
 df_area['global_area_bin'] = pd.cut(df_area['Area'], bins=global_area_bins, include_lowest=True)
 df_diam['global_diameter_bin'] = pd.cut(df_diam['Diameter'], bins=global_diameter_bins, include_lowest=True)
@@ -166,14 +162,14 @@ df_diam['global_diameter_bin'] = pd.cut(df_diam['Diameter'], bins=global_diamete
 # Summary stats by sector
 # -------------------------
 stats = df.groupby(bin_col).agg(
-    particle_count=('Area', 'count'),
-    sum_area=('Area', 'sum'),
-    mean_area=('Area', 'mean'),
-    std_area=('Area', 'std'),
-    sem_area=('Area', 'sem'),
-    mean_diameter=('Diameter', 'mean'),
-    std_diameter=('Diameter', 'std'),
-    sem_diameter=('Diameter', 'sem')
+            particle_count=('Area', 'count'),
+            sum_area=('Area', 'sum'),
+            mean_area=('Area', 'mean'),
+            std_area=('Area', 'std'),
+            sem_area=('Area', 'sem'),
+            mean_diameter=('Diameter', 'mean'),
+            std_diameter=('Diameter', 'std'),
+            sem_diameter=('Diameter', 'sem')
 )
 
 sector_percentiles = df.groupby(bin_col)['Diameter'].apply(
